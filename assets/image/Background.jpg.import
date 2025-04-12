@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://brcidemykhsh0"
-path="res://.godot/imported/fiches addon (Poker Cards).png-5009dd1225e314b097b4d33e9e200bac.ctex"
+uid="uid://vg07pr747d3j"
+path="res://.godot/imported/Background.jpg-aaaccb6a3535b537ef237c2b01591c59.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/image/fiches addon (Poker Cards).png"
-dest_files=["res://.godot/imported/fiches addon (Poker Cards).png-5009dd1225e314b097b4d33e9e200bac.ctex"]
+source_file="res://assets/image/Background.jpg"
+dest_files=["res://.godot/imported/Background.jpg-aaaccb6a3535b537ef237c2b01591c59.ctex"]
 
 [params]
 

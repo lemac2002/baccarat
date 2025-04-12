@@ -1,39 +1,122 @@
-[gd_scene load_steps=2 format=3 uid="uid://2g4qeqnknyyc"]
+[gd_scene load_steps=7 format=3 uid="uid://2g4qeqnknyyc"]
 
 [ext_resource type="Script" uid="uid://cvu46y0j5ionv" path="res://scripts/Menu.gd" id="1_elqb8"]
+[ext_resource type="Texture2D" uid="uid://vg07pr747d3j" path="res://assets/image/Background.jpg" id="2_rvslj"]
+[ext_resource type="FontFile" uid="uid://cg2yuitht7ubo" path="res://assets/Fonts/Pixelme.ttf" id="3_0bbpv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rarhs"]
+bg_color = Color(0.933333, 0.0196078, 0.0196078, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0.0460354, 0.054819, 0.0471469, 0.6)
+shadow_size = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vcsgt"]
+bg_color = Color(0.933333, 0.0196078, 0.0196078, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c01mt"]
+bg_color = Color(0.933333, 0.0196078, 0.0196078, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 3
 
 [node name="Menu" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 4.0
+offset_bottom = 4.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_elqb8")
 
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 7.0
+offset_right = 12.0
+offset_bottom = 7.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_rvslj")
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 0
-offset_left = 434.0
-offset_top = 149.0
-offset_right = 535.0
-offset_bottom = 250.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -136.0
+offset_top = -241.0
+offset_right = 160.0
+offset_bottom = -121.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="Play" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("3_0bbpv")
+theme_override_font_sizes/font_size = 64
+text = "Baccarat"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Seperator" type="Control" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+offset_left = 448.0
+offset_top = 268.0
+offset_right = 718.0
+offset_bottom = 388.0
+
+[node name="Play" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_0bbpv")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_rarhs")
 text = "Play"
 
-[node name="Instructions" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Seperator3" type="Control" parent="HBoxContainer"]
 layout_mode = 2
+
+[node name="Instructions" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_0bbpv")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_vcsgt")
 text = "Instructions"
 
-[node name="Exit" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Seperator2" type="Control" parent="HBoxContainer"]
 layout_mode = 2
+
+[node name="Exit" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_0bbpv")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_c01mt")
 text = "Exit
 "
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Play" to="." method="_on_play_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Instructions" to="." method="_on_instructions_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="HBoxContainer/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="HBoxContainer/Instructions" to="." method="_on_instructions_pressed"]
+[connection signal="pressed" from="HBoxContainer/Exit" to="." method="_on_exit_pressed"]
