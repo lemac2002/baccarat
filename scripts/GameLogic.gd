@@ -1,33 +1,69 @@
 extends Node2D
-#ends
 
-#Global vars
+# Constants for card sprite sheet layout
+const CARD_WIDTH := 48
+const CARD_HEIGHT := 64
+const SPRITE_PATH := "res://assets/image/1.2 Poker cards.png"
+
+# Positioning for card rendering on screen
+const PLAYER_CARD_POS := Vector2(270, 265)
+const BANKER_CARD_POS := Vector2(730, 265)
+const CARD_SPACING := 50
+
+# Global vars
 var deck = []
 var player_hand = []
 var banker_hand = []
 var num_decks = 8
 
 func new_game_pressed() -> void:
-	$New_Round.visible = true 
-	$Start_Game.visible = false 
+	$New_Round.visible = true
+	$Start_Game.visible = false
 	print("New Game Pressed")
 	new_game()
+	display_cards(player_hand, banker_hand)
 
 func new_round_pressed() -> void:
 	print("New Round Pressed")
 	new_round()
-	
-# Start a new game round
-func new_round():
-	print("\n--- Starting New Round ---\n")
-	# Check if deck is getting low and reshuffle if needed
-	if deck.size() < 50:  # Reshuffles when fewer than 50 cards remain in the shoe
-		print("Shoe is low with ", deck.size(), " cards remaining, reshuffling...")
-		init_deck()
-		shuffle_deck()
-	deal_initial_cards()
-	evaluate_game()
-	
+	display_cards(player_hand, banker_hand)
+
+# Show player and banker cards visually
+func display_cards(player_hand: Array, banker_hand: Array):
+	for child in get_children():
+		if child.name.begins_with("Card_"):
+			remove_child(child)
+			child.queue_free()
+
+	for i in player_hand.size():
+		var card_sprite = create_card_sprite(player_hand[i])
+		card_sprite.position = PLAYER_CARD_POS + Vector2(i * CARD_SPACING, 0)
+		card_sprite.name = "Card_Player_%d" % i
+		add_child(card_sprite)
+
+	for i in banker_hand.size():
+		var card_sprite = create_card_sprite(banker_hand[i])
+		card_sprite.position = BANKER_CARD_POS + Vector2(i * CARD_SPACING, 0)
+		card_sprite.name = "Card_Banker_%d" % i
+		add_child(card_sprite)
+
+func create_card_sprite(card: Dictionary) -> Sprite2D:
+	var sprite := Sprite2D.new()
+	sprite.texture = load(SPRITE_PATH)
+	sprite.region_enabled = true
+	sprite.region_rect = get_card_region(card)
+	return sprite
+
+func get_card_region(card: Dictionary) -> Rect2:
+	var value_map := {"A": 0, "2": 1, "3": 2, "4": 3, "5": 4, "6": 5, "7": 6,
+		"8": 7, "9": 8, "10": 9, "J": 10, "Q": 11, "K": 12}
+	var suit_map := {"Hearts": 0,"Diamonds": 1,"Spades": 2,"Clubs": 3}
+	var value = str(card["rank"])
+	var suit = card["suit"]
+	var col: int = value_map.get(value, 0)
+	var row: int = suit_map.get(suit, 0)
+
+	return Rect2(col * CARD_WIDTH, row * CARD_HEIGHT, CARD_WIDTH, CARD_HEIGHT)
 
 func new_game():
 	randomize()
@@ -35,6 +71,15 @@ func new_game():
 	print("\n--- Welcome To The Baccarat Table ---\n")
 	init_deck()
 	shuffle_deck()
+	deal_initial_cards()
+	evaluate_game()
+
+func new_round():
+	print("\n--- Starting New Round ---\n")
+	if deck.size() < 50:
+		print("Shoe is low with ", deck.size(), " cards remaining, reshuffling...")
+		init_deck()
+		shuffle_deck()
 	deal_initial_cards()
 	evaluate_game()
 	
