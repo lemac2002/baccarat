@@ -1,6 +1,22 @@
-[gd_scene load_steps=2 format=3 uid="uid://gpsvsuw8md1t"]
+[gd_scene load_steps=5 format=3 uid="uid://gpsvsuw8md1t"]
 
 [ext_resource type="Script" uid="uid://c7cyivei8tv8" path="res://scripts/Instructions.gd" id="1_dkfqi"]
+[ext_resource type="FontFile" uid="uid://cg2yuitht7ubo" path="res://assets/Fonts/Pixelme.ttf" id="2_nisbi"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_njqp3"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c00ax"]
+bg_color = Color(0.933333, 0.0196078, 0.0196078, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 3
 
 [node name="Instructions" type="Control"]
 layout_mode = 3
@@ -12,15 +28,59 @@ grow_vertical = 2
 script = ExtResource("1_dkfqi")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-offset_left = 434.0
-offset_top = 149.0
-offset_right = 535.0
-offset_bottom = 250.0
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 9.0
+offset_top = 191.0
+offset_right = 207.0
+offset_bottom = 369.0
+grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
 [node name="Back" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_nisbi")
+theme_override_styles/hover = SubResource("StyleBoxFlat_njqp3")
+theme_override_styles/normal = SubResource("StyleBoxFlat_c00ax")
+text = "Back
+"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+offset_left = 49.0
+offset_top = 17.0
+offset_right = 1041.0
+offset_bottom = 212.0
+theme_override_fonts/font = ExtResource("2_nisbi")
+theme_override_font_sizes/font_size = 18
+text = "1. Place Your Bets
+
+    Before the cards Are dealt: choose whether to bet on the Player hand, the Banker hand , or a Tie.
+
+2. Get dealt the the initial cards
+
+    Two cards each: the dealer deals two cards to the Player hand and two cards to the Banker hand, all face up.
+
+3.  Nearest to 9 WINS!"
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 1
+offset_left = 58.0
+offset_top = 274.0
+offset_right = 1050.0
+offset_bottom = 469.0
+theme_override_fonts/font = ExtResource("2_nisbi")
+theme_override_font_sizes/font_size = 18
+text = "Betting Odds:
+
+Banker Win:  0.45860 
+
+Player Win: 0.44625
+
+Tie: 0.09515"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]

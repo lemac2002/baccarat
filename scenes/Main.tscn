@@ -1,8 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://2g4qeqnknyyc"]
+[gd_scene load_steps=10 format=3 uid="uid://2g4qeqnknyyc"]
 
 [ext_resource type="Script" uid="uid://cvu46y0j5ionv" path="res://scripts/Menu.gd" id="1_elqb8"]
 [ext_resource type="Texture2D" uid="uid://vg07pr747d3j" path="res://assets/image/Background.jpg" id="2_rvslj"]
 [ext_resource type="FontFile" uid="uid://cg2yuitht7ubo" path="res://assets/Fonts/Pixelme.ttf" id="3_0bbpv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0bbpv"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rarhs"]
 bg_color = Color(0.933333, 0.0196078, 0.0196078, 1)
@@ -13,6 +20,13 @@ corner_radius_bottom_left = 16
 shadow_color = Color(0.0460354, 0.054819, 0.0471469, 0.6)
 shadow_size = 3
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nxtc6"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vcsgt"]
 bg_color = Color(0.933333, 0.0196078, 0.0196078, 1)
 corner_radius_top_left = 16
@@ -20,6 +34,13 @@ corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 shadow_size = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jlsqs"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c01mt"]
 bg_color = Color(0.933333, 0.0196078, 0.0196078, 1)
@@ -45,13 +66,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 7.0
-offset_right = 12.0
-offset_bottom = 7.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_rvslj")
+metadata/_edit_use_anchors_ = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -93,6 +111,7 @@ offset_bottom = 388.0
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_0bbpv")
 theme_override_font_sizes/font_size = 20
+theme_override_styles/hover = SubResource("StyleBoxFlat_0bbpv")
 theme_override_styles/normal = SubResource("StyleBoxFlat_rarhs")
 text = "Play"
 
@@ -103,16 +122,18 @@ layout_mode = 2
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_0bbpv")
 theme_override_font_sizes/font_size = 20
+theme_override_styles/hover = SubResource("StyleBoxFlat_nxtc6")
 theme_override_styles/normal = SubResource("StyleBoxFlat_vcsgt")
 text = "Instructions"
 
-[node name="Seperator2" type="Control" parent="HBoxContainer"]
+[node name="Seperator4" type="Control" parent="HBoxContainer"]
 layout_mode = 2
 
 [node name="Exit" type="Button" parent="HBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_0bbpv")
 theme_override_font_sizes/font_size = 20
+theme_override_styles/hover = SubResource("StyleBoxFlat_jlsqs")
 theme_override_styles/normal = SubResource("StyleBoxFlat_c01mt")
 text = "Exit
 "
