@@ -7,6 +7,11 @@ var player_hand = []
 var banker_hand = []
 var num_decks = 8
 
+func _on_deal_pressed() -> void:
+	print("Deal Pressed")
+	new_round()
+	
+
 # Start a new game round
 func new_round():
 	print("\n--- Starting New Round ---\n")
