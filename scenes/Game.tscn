@@ -1,15 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://pvesde8go4pl"]
+[gd_scene load_steps=6 format=3 uid="uid://pvesde8go4pl"]
 
 [ext_resource type="Script" uid="uid://ddyydlb1ihhg7" path="res://scripts/GameLogic.gd" id="1_cpr0p"]
-[ext_resource type="Texture2D" uid="uid://d1l6x6m8e6cq6" path="res://assets/image/Gameboard.png" id="1_ibkli"]
-[ext_resource type="Texture2D" uid="uid://cmhb4diceddx1" path="res://assets/image/card_back.png" id="2_qbsmt"]
-
-[sub_resource type="Gradient" id="Gradient_cpr0p"]
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_78awf"]
-gradient = SubResource("Gradient_cpr0p")
-
-[sub_resource type="CanvasTexture" id="CanvasTexture_cpr0p"]
+[ext_resource type="Texture2D" uid="uid://cs5yhnqmlb2om" path="res://assets/image/Gameboard.png" id="1_ibkli"]
+[ext_resource type="Texture2D" uid="uid://d345qyytyahsi" path="res://assets/image/card_back.png" id="2_qbsmt"]
+[ext_resource type="Texture2D" uid="uid://dsi4mejd5q1xn" path="res://assets/image/button_deal_160x50.png" id="4_aug50"]
+[ext_resource type="Texture2D" uid="uid://csdqlf2gutrmk" path="res://assets/image/button_start_game_rounded.png" id="4_s0nni"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_cpr0p")
@@ -25,10 +20,15 @@ scale = Vector2(0.113949, 0.11708)
 texture = ExtResource("2_qbsmt")
 metadata/_edit_lock_ = true
 
-[node name="Deal" type="TouchScreenButton" parent="."]
-position = Vector2(48, 567)
-scale = Vector2(0.363281, 45)
-texture_normal = SubResource("GradientTexture1D_78awf")
-texture_pressed = SubResource("CanvasTexture_cpr0p")
+[node name="New_Round" type="TouchScreenButton" parent="."]
+visible = false
+position = Vector2(200, 560)
+texture_normal = ExtResource("4_aug50")
 
-[connection signal="pressed" from="Deal" to="." method="_on_deal_pressed"]
+[node name="Start_Game" type="TouchScreenButton" parent="."]
+position = Vector2(20, 560)
+texture_normal = ExtResource("4_s0nni")
+
+[connection signal="pressed" from="New_Round" to="." method="new_round_pressed"]
+[connection signal="pressed" from="New_Round" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Start_Game" to="." method="new_game_pressed"]
