@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://ddyydlb1ihhg7" path="res://scripts/GameLogic.gd" id="1_cpr0p"]
 [ext_resource type="Texture2D" uid="uid://cs5yhnqmlb2om" path="res://assets/image/Gameboard.png" id="1_ibkli"]
 [ext_resource type="Texture2D" uid="uid://d345qyytyahsi" path="res://assets/image/card_back.png" id="2_qbsmt"]
-[ext_resource type="Texture2D" uid="uid://dsi4mejd5q1xn" path="res://assets/image/button_deal_160x50.png" id="4_aug50"]
-[ext_resource type="Texture2D" uid="uid://csdqlf2gutrmk" path="res://assets/image/button_start_game_rounded.png" id="4_s0nni"]
+[ext_resource type="Texture2D" uid="uid://brevayx0vw0a4" path="res://assets/image/deal_button.png" id="4_aug50"]
+[ext_resource type="Texture2D" uid="uid://c0ibrlafu727i" path="res://assets/image/start_game_button.png" id="4_s0nni"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_cpr0p")
@@ -30,5 +30,4 @@ position = Vector2(20, 560)
 texture_normal = ExtResource("4_s0nni")
 
 [connection signal="pressed" from="New_Round" to="." method="new_round_pressed"]
-[connection signal="pressed" from="New_Round" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="Start_Game" to="." method="new_game_pressed"]

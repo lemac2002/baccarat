@@ -16,9 +16,7 @@ func new_game_pressed() -> void:
 func new_round_pressed() -> void:
 	print("New Round Pressed")
 	new_round()
-
 	
-
 # Start a new game round
 func new_round():
 	print("\n--- Starting New Round ---\n")
