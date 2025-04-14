@@ -140,14 +140,16 @@ func calc_hand_total(hand):
 
 # Compares totals to determine the winner.
 func determine_winner(player_total, banker_total):
+	var player_score = calc_hand_total(player_hand)
+	var banker_score = calc_hand_total(banker_hand)
 	if player_total > banker_total:
-		$Game_Outcome.dialog_text = "Player wins! Your Payout is:"
+		$Game_Outcome.dialog_text = "Player wins!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nYour Payout is:" % [player_score, banker_score]
 		print("Player wins!")
 	elif banker_total > player_total:
-		$Game_Outcome.dialog_text = "Banker wins! Your Payout is:"
+		$Game_Outcome.dialog_text = "Banker wins!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nYour Payout is:" % [player_score, banker_score]
 		print("Banker wins!")
 	else:
-		$Game_Outcome.dialog_text = "Tie! Your Payout is:"
+		$Game_Outcome.dialog_text = "Tie!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nYour Payout is:" % [player_score, banker_score]
 		print("Tie!")
 	$Game_Outcome.popup_centered()
 	$Game_Outcome.visible = true
