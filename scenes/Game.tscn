@@ -50,6 +50,7 @@ texture = ExtResource("2_qbsmt")
 metadata/_edit_lock_ = true
 
 [node name="New_Round" type="Button" parent="."]
+visible = false
 offset_left = 966.0
 offset_top = 549.0
 offset_right = 966.0
@@ -71,6 +72,14 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_kiw3p")
 theme_override_styles/normal = SubResource("StyleBoxFlat_400sg")
 text = "Start Game
 "
+
+[node name="Drawing" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Game_Outcome" type="AcceptDialog" parent="."]
+title = "Game Outcome:"
+size = Vector2i(300, 300)
 
 [connection signal="pressed" from="New_Round" to="." method="new_round_pressed"]
 [connection signal="pressed" from="Start_Game" to="." method="new_game_pressed"]

@@ -6,8 +6,8 @@ const CARD_HEIGHT := 64
 const SPRITE_PATH := "res://assets/image/1.2 Poker cards.png"
 
 # Positioning for card rendering on screen
-const PLAYER_CARD_POS := Vector2(270, 265)
-const BANKER_CARD_POS := Vector2(730, 265)
+const PLAYER_CARD_POS := Vector2(320, 230)
+const BANKER_CARD_POS := Vector2(740, 230)
 const CARD_SPACING := 50
 
 # Global vars
@@ -17,16 +17,14 @@ var banker_hand = []
 var num_decks = 8
 
 func new_game_pressed() -> void:
-	$New_Round.visible = true
 	$Start_Game.visible = false
 	print("New Game Pressed")
 	new_game()
-	display_cards(player_hand, banker_hand)
 
 func new_round_pressed() -> void:
 	print("New Round Pressed")
+	$New_Round.visible = false
 	new_round()
-	display_cards(player_hand, banker_hand)
 
 # Show player and banker cards visually
 func display_cards(player_hand: Array, banker_hand: Array):
@@ -72,6 +70,7 @@ func new_game():
 	init_deck()
 	shuffle_deck()
 	deal_initial_cards()
+	display_cards(player_hand, banker_hand)
 	evaluate_game()
 
 func new_round():
@@ -81,6 +80,7 @@ func new_round():
 		init_deck()
 		shuffle_deck()
 	deal_initial_cards()
+	display_cards(player_hand, banker_hand)
 	evaluate_game()
 	
 # Creates 8 standard 52-card decks in shoe.
@@ -141,13 +141,44 @@ func calc_hand_total(hand):
 # Compares totals to determine the winner.
 func determine_winner(player_total, banker_total):
 	if player_total > banker_total:
+		$Game_Outcome.dialog_text = "Player wins! Your Payout is:"
 		print("Player wins!")
 	elif banker_total > player_total:
+		$Game_Outcome.dialog_text = "Banker wins! Your Payout is:"
 		print("Banker wins!")
 	else:
+		$Game_Outcome.dialog_text = "Tie! Your Payout is:"
 		print("Tie!")
+	$Game_Outcome.popup_centered()
+	$Game_Outcome.visible = true
+	$New_Round.visible = true
+		
+
+# Create a wait between drawing the 2 initial cards and extra cards
+func prompt_player_draw():
+	$Drawing.position = Vector2(240, 160)
+	$Drawing.text = "Drawing a third card for Player..."
+	$Drawing.visible = true
+	await get_tree().create_timer(2.0).timeout
+	$Drawing.visible = false
 	
-# Simulate game
+# Create a wait between drawing the 2 initial cards and extra cards
+func promt_banker_draw():
+	$Drawing.position = Vector2(660, 160)
+	$Drawing.text = "Drawing a third card for Banker..."
+	$Drawing.visible = true
+	await get_tree().create_timer(2.0).timeout
+	$Drawing.visible = false
+
+# Create a wait between drawing the 2 initial cards and extra cards
+func end_game():
+	$Drawing.position = Vector2(500, 160)
+	$Drawing.text = "Calculating Outcome..."
+	$Drawing.visible = true
+	await get_tree().create_timer(2.0).timeout
+	$Drawing.visible = false
+	
+# Run game
 func evaluate_game():
 	# Calculate initial totals
 	var player_score = calc_hand_total(player_hand)
@@ -160,6 +191,7 @@ func evaluate_game():
 	# Check for naturals (8 or 9)
 	if player_score >= 8 or banker_score >= 8:
 		print("Natural!")
+		await end_game()
 		determine_winner(player_score, banker_score)
 		return
 
@@ -168,10 +200,12 @@ func evaluate_game():
 	var player_third_card = null
 	
 	if player_score <= 5:
+		await prompt_player_draw()
 		player_third_card = deck.pop_back()
 		player_hand.append(player_third_card)
 		player_draws_third = true
 		player_score = calc_hand_total(player_hand) # Update player hand with third card
+		display_cards(player_hand, banker_hand)
 		print("Player draws third card: ", player_third_card, " (Rule: player <= 5)")
 	else:
 		print("Player stands with ", player_score, " (Rule: player 6 or 7)")
@@ -180,6 +214,7 @@ func evaluate_game():
 	if not player_draws_third: # Player did not draw
 		if banker_score <= 5:
 			var banker_third_card = deck.pop_back()
+			await promt_banker_draw()
 			banker_hand.append(banker_third_card)
 			print("Banker draws third card: ", banker_third_card, " (Rule: banker <= 5 when player stands)")
 		else:
@@ -190,11 +225,13 @@ func evaluate_game():
 		
 		if banker_score == 0 or banker_score == 1 or banker_score == 2: # Banker always draws on 0-2
 			var banker_third_card = deck.pop_back()
+			await promt_banker_draw()
 			banker_hand.append(banker_third_card)
 			print("Banker draws third card: ", banker_third_card, " (Rule: banker 0-2 always draws)")
 		elif banker_score == 3: # Banker draws unless player's third card was 8
 			if third_card_value != 8:
 				var banker_third_card = deck.pop_back()
+				await promt_banker_draw()
 				banker_hand.append(banker_third_card)
 				print("Banker draws third card: ", banker_third_card, " (Rule: banker 3 draws unless player's third is 8)")
 			else:
@@ -202,6 +239,7 @@ func evaluate_game():
 		elif banker_score == 4: # Banker draws if player's third card was 2-7
 			if third_card_value >= 2 and third_card_value <= 7:
 				var banker_third_card = deck.pop_back()
+				await promt_banker_draw()
 				banker_hand.append(banker_third_card)
 				print("Banker draws third card: ", banker_third_card, " (Rule: banker 4 draws when player's third is 2-7)")
 			else:
@@ -209,6 +247,7 @@ func evaluate_game():
 		elif banker_score == 5: # Banker draws if player's third card was 4-7
 			if third_card_value >= 4 and third_card_value <= 7:
 				var banker_third_card = deck.pop_back()
+				await promt_banker_draw()
 				banker_hand.append(banker_third_card)
 				print("Banker draws third card: ", banker_third_card, " (Rule: banker 5 draws when player's third is 4-7)")
 			else:
@@ -216,6 +255,7 @@ func evaluate_game():
 		elif banker_score == 6: # Banker draws if player's third card was 6-7
 			if third_card_value == 6 or third_card_value == 7:
 				var banker_third_card = deck.pop_back()
+				await promt_banker_draw()
 				banker_hand.append(banker_third_card)
 				print("Banker draws third card: ", banker_third_card, " (Rule: banker 6 draws when player's third is 6-7)")
 			else:
@@ -223,12 +263,12 @@ func evaluate_game():
 		elif banker_score == 7: # Banker always stands on 7
 			print("Banker stands with 7 (Rule: banker 7 always stands)")
 	
-	# Calculate final scores
 	banker_score = calc_hand_total(banker_hand)
 	
 	print("Final Hands:")
 	print("Player: ", player_hand, " Total: ", player_score)
 	print("Banker: ", banker_hand, " Total: ", banker_score)
 	
-	# Determine winner
+	display_cards(player_hand, banker_hand)
+	await end_game()
 	determine_winner(player_score, banker_score)
