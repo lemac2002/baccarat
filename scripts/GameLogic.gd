@@ -50,6 +50,7 @@ func create_card_sprite(card: Dictionary) -> Sprite2D:
 	sprite.texture = load(SPRITE_PATH)
 	sprite.region_enabled = true
 	sprite.region_rect = get_card_region(card)
+	sprite.scale = Vector2(1.5, 1.5)
 	return sprite
 
 func get_card_region(card: Dictionary) -> Rect2:

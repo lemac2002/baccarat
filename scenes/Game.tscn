@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ddyydlb1ihhg7" path="res://scripts/GameLogic.gd" id="1_cpr0p"]
 [ext_resource type="Texture2D" uid="uid://cs5yhnqmlb2om" path="res://assets/image/Gameboard.png" id="1_ibkli"]
-[ext_resource type="Texture2D" uid="uid://d345qyytyahsi" path="res://assets/image/card_back.png" id="2_qbsmt"]
+[ext_resource type="Texture2D" uid="uid://dajhcnjcisrua" path="res://assets/image/Deck of cards ( full cards ).png" id="3_78awf"]
 [ext_resource type="FontFile" uid="uid://cg2yuitht7ubo" path="res://assets/Fonts/Pixelme.ttf" id="4_78awf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s0nni"]
@@ -38,15 +38,20 @@ shadow_size = 3
 [node name="Main" type="Node2D"]
 script = ExtResource("1_cpr0p")
 
-[node name="Background" type="Sprite2D" parent="."]
-position = Vector2(577, 323)
+[node name="Background" type="TextureRect" parent="."]
+offset_left = 577.0
+offset_top = 323.0
+offset_right = 577.0
+offset_bottom = 323.0
 texture = ExtResource("1_ibkli")
 metadata/_edit_lock_ = true
 
 [node name="FaceDownCard" type="Sprite2D" parent="."]
 position = Vector2(1059, 106.5)
-scale = Vector2(0.113949, 0.11708)
-texture = ExtResource("2_qbsmt")
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("3_78awf")
+region_enabled = true
+region_rect = Rect2(48, 356, 51, 76)
 metadata/_edit_lock_ = true
 
 [node name="New_Round" type="Button" parent="."]
@@ -58,7 +63,7 @@ offset_bottom = 549.0
 theme_override_fonts/font = ExtResource("4_78awf")
 theme_override_styles/hover = SubResource("StyleBoxFlat_s0nni")
 theme_override_styles/normal = SubResource("StyleBoxFlat_aug50")
-text = "Deal Cards
+text = "New Round
 "
 
 [node name="Start_Game" type="Button" parent="."]
