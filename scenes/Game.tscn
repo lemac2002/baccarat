@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://pvesde8go4pl"]
+[gd_scene load_steps=11 format=3 uid="uid://pvesde8go4pl"]
 
 [ext_resource type="Script" uid="uid://ddyydlb1ihhg7" path="res://scripts/GameLogic.gd" id="1_cpr0p"]
 [ext_resource type="Texture2D" uid="uid://cs5yhnqmlb2om" path="res://assets/image/Gameboard.png" id="1_ibkli"]
@@ -35,14 +35,28 @@ corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 shadow_size = 3
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_78awf"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.25, 0.25, 0.25, 1)
+corner_detail = 1
+
+[sub_resource type="Theme" id="Theme_78awf"]
+AcceptDialog/constants/buttons_separation = 10
+AcceptDialog/styles/panel = SubResource("StyleBoxFlat_78awf")
+
 [node name="Main" type="Node2D"]
 script = ExtResource("1_cpr0p")
 
-[node name="Background" type="TextureRect" parent="."]
-offset_left = 577.0
-offset_top = 323.0
-offset_right = 577.0
-offset_bottom = 323.0
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="Background" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
 texture = ExtResource("1_ibkli")
 metadata/_edit_lock_ = true
 
@@ -81,10 +95,12 @@ text = "Start Game
 [node name="Drawing" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("4_78awf")
 
 [node name="Game_Outcome" type="AcceptDialog" parent="."]
 title = "Game Outcome:"
 size = Vector2i(300, 300)
+theme = SubResource("Theme_78awf")
 
 [connection signal="pressed" from="New_Round" to="." method="new_round_pressed"]
 [connection signal="pressed" from="Start_Game" to="." method="new_game_pressed"]
