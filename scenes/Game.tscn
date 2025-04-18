@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://pvesde8go4pl"]
+[gd_scene load_steps=12 format=3 uid="uid://pvesde8go4pl"]
 
 [ext_resource type="Script" uid="uid://ddyydlb1ihhg7" path="res://scripts/GameLogic.gd" id="1_cpr0p"]
 [ext_resource type="Texture2D" uid="uid://cs5yhnqmlb2om" path="res://assets/image/Gameboard.png" id="1_ibkli"]
@@ -35,14 +35,23 @@ corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 shadow_size = 3
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_78awf"]
+size = Vector2(158, 176)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s0nni"]
+size = Vector2(162.5, 175.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_aug50"]
+size = Vector2(157, 173)
+
 [node name="Main" type="Node2D"]
 script = ExtResource("1_cpr0p")
 
 [node name="Background" type="TextureRect" parent="."]
-offset_left = 577.0
-offset_top = 323.0
-offset_right = 577.0
-offset_bottom = 323.0
+offset_left = 2.0
+offset_top = 1.0
+offset_right = 1154.0
+offset_bottom = 649.0
 texture = ExtResource("1_ibkli")
 metadata/_edit_lock_ = true
 
@@ -86,5 +95,42 @@ offset_bottom = 23.0
 title = "Game Outcome:"
 size = Vector2i(300, 300)
 
+[node name="BankrollLabel" type="Label" parent="."]
+offset_left = 42.0
+offset_top = 27.0
+offset_right = 176.0
+offset_bottom = 71.0
+
+[node name="BetAmountLabel" type="AcceptDialog" parent="."]
+
+[node name="InsufficientFundsLabel" type="AcceptDialog" parent="."]
+
+[node name="PlayerBetArea" type="Area2D" parent="."]
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerBetArea"]
+position = Vector2(336, 442)
+shape = SubResource("RectangleShape2D_78awf")
+metadata/_edit_lock_ = true
+
+[node name="BankerBetArea" type="Area2D" parent="."]
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BankerBetArea"]
+position = Vector2(823, 448)
+shape = SubResource("RectangleShape2D_s0nni")
+metadata/_edit_lock_ = true
+
+[node name="TieBetArea" type="Area2D" parent="."]
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TieBetArea"]
+position = Vector2(579, 444)
+shape = SubResource("RectangleShape2D_aug50")
+metadata/_edit_lock_ = true
+
 [connection signal="pressed" from="New_Round" to="." method="new_round_pressed"]
 [connection signal="pressed" from="Start_Game" to="." method="new_game_pressed"]
+[connection signal="input_event" from="PlayerBetArea" to="." method="_on_PlayerBetArea_input_event"]
+[connection signal="input_event" from="BankerBetArea" to="." method="_on_BankerBetArea_input_event"]
+[connection signal="input_event" from="TieBetArea" to="." method="_on_TieBetArea_input_event"]

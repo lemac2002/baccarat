@@ -5,6 +5,17 @@ const CARD_WIDTH := 48
 const CARD_HEIGHT := 64
 const SPRITE_PATH := "res://assets/image/1.2 Poker cards.png"
 
+const CHIPS_SPRITE_PATH := "res://assets/image/fiches addon (Poker Cards).png"
+const CHIP_SIZE := Vector2(46.0, 48.0)
+const CHIP_DENOMINATIONS := [1, 5, 25, 100, 500]
+const CHIP_REGION_MAP := {
+	1: Vector2(0, 0),
+	5: Vector2(0, 1),
+	25: Vector2(0, 2),
+	100: Vector2(0, 3),
+	500: Vector2(4, 0)
+}
+
 # Positioning for card rendering on screen
 const PLAYER_CARD_POS := Vector2(320, 230)
 const BANKER_CARD_POS := Vector2(740, 230)
@@ -16,6 +27,19 @@ var player_hand = []
 var banker_hand = []
 var num_decks = 8
 
+var player_bankroll := 1000
+var selected_bet_amount := 0
+var active_bets := {
+	"Player": 0,
+	"Banker": 0,
+	"Tie": 0
+}
+
+func _ready():
+	display_chips()
+	$BankrollLabel.text = "Bankroll: $%d" % player_bankroll
+	$BetAmountLabel.dialog_text = "Choose a chip to place your bet"
+
 func new_game_pressed() -> void:
 	$Start_Game.visible = false
 	print("New Game Pressed")
@@ -25,6 +49,101 @@ func new_round_pressed() -> void:
 	print("New Round Pressed")
 	$New_Round.visible = false
 	new_round()
+
+func display_chips():
+	for child in get_children():
+		if child.name.begins_with("Chip_"):
+			remove_child(child)
+			child.queue_free()
+
+	var x_start := 450
+	var y := 575
+	for i in CHIP_DENOMINATIONS.size():
+		var denom = CHIP_DENOMINATIONS[i]
+		var chip = create_chip_sprite(denom, Vector2(x_start + i * 70, y))
+		add_child(chip)
+	
+func create_chip_sprite(denomination: int, position: Vector2) -> Area2D:
+	var area := Area2D.new()
+	area.position = position
+	area.name = "Chip_%d" % denomination
+
+	var sprite := Sprite2D.new()
+	sprite.texture = load(CHIPS_SPRITE_PATH)
+	sprite.region_enabled = true
+	sprite.region_rect = get_chip_region(denomination)
+	sprite.position = Vector2.ZERO  # Top-left alignment
+	area.add_child(sprite)
+
+	var shape := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = CHIP_SIZE
+	shape.shape = rect
+	shape.position = Vector2.ZERO  # Align shape with sprite
+	area.add_child(shape)
+
+	area.connect("input_event", Callable(self, "_on_chip_clicked").bind(denomination))
+	return area
+
+func get_chip_region(denomination: int) -> Rect2:
+	var pos = CHIP_REGION_MAP.get(denomination, Vector2.ZERO)
+	return Rect2(pos.x * CHIP_SIZE.x, pos.y * CHIP_SIZE.y, CHIP_SIZE.x, CHIP_SIZE.y)
+
+func _on_chip_clicked(viewport, event, shape_idx, denomination):
+	if event is InputEventMouseButton and event.pressed:
+		selected_bet_amount = denomination
+		$BetAmountLabel.dialog_text = "Selected Chip: $%d" % denomination
+		print("Selected chip: $%d" % denomination)
+
+func _on_PlayerBetArea_input_event(viewport, event, shape_idx):
+	if event is InputEventMouseButton and event.pressed:
+		if selected_bet_amount == 0:
+			print("No chip selected.")
+			return
+		active_bets["Player"] += selected_bet_amount
+		selected_bet_amount = 0
+		$BetAmountLabel.dialog_text = "Bet $%d on Player" % active_bets["Player"]
+		print("Player Bet Total: $%d" % active_bets["Player"])
+
+func _on_BankerBetArea_input_event(viewport, event, shape_idx):
+	if event is InputEventMouseButton and event.pressed:
+		if selected_bet_amount == 0:
+			print("No chip selected.")
+			return
+		active_bets["Banker"] += selected_bet_amount
+		selected_bet_amount = 0
+		$BetAmountLabel.dialog_text = "Bet $%d on Banker" % active_bets["Banker"]
+		print("Banker Bet Total: $%d" % active_bets["Banker"])
+
+func _on_TieBetArea_input_event(viewport, event, shape_idx):
+	if event is InputEventMouseButton and event.pressed:
+		if selected_bet_amount == 0:
+			print("No chip selected.")
+			return
+		active_bets["Tie"] += selected_bet_amount
+		selected_bet_amount = 0
+		$BetAmountLabel.dialog_text = "Bet $%d on Tie" % active_bets["Tie"]
+		print("Tie Bet Total: $%d" % active_bets["Tie"])
+
+func place_bet() -> bool:
+	var total_bet: int = active_bets["Player"] + active_bets["Banker"] + active_bets["Tie"]
+	if total_bet == 0:
+		$InsufficientFundsLabel.dialog_text = "Place a bet before starting!"
+		$InsufficientFundsLabel.popup_centered()
+		await get_tree().create_timer(2.0).timeout
+		$InsufficientFundsLabel.hide()
+		$Start_Game.visible = true
+		return false
+	if total_bet > player_bankroll:
+		$InsufficientFundsLabel.dialog_text = "Not enough money for all your bets!"
+		$InsufficientFundsLabel.popup_centered()
+		await get_tree().create_timer(2.0).timeout
+		$InsufficientFundsLabel.hide()
+		$Start_Game.visible = true
+		return false
+	player_bankroll -= total_bet
+	$BankrollLabel.text = "Bankroll: $%d" % player_bankroll
+	return true
 
 # Show player and banker cards visually
 func display_cards(player_hand: Array, banker_hand: Array):
@@ -68,6 +187,11 @@ func new_game():
 	randomize()
 	print("\n--- Starting New Game ---\n")
 	print("\n--- Welcome To The Baccarat Table ---\n")
+	
+	if await place_bet() != true:
+		$Start_Game.visible = true
+		return
+		
 	init_deck()
 	shuffle_deck()
 	deal_initial_cards()
@@ -80,6 +204,11 @@ func new_round():
 		print("Shoe is low with ", deck.size(), " cards remaining, reshuffling...")
 		init_deck()
 		shuffle_deck()
+		
+	if await place_bet() != true:
+		$New_Round.visible = true
+		return
+		
 	deal_initial_cards()
 	display_cards(player_hand, banker_hand)
 	evaluate_game()
@@ -143,18 +272,33 @@ func calc_hand_total(hand):
 func determine_winner(player_total, banker_total):
 	var player_score = calc_hand_total(player_hand)
 	var banker_score = calc_hand_total(banker_hand)
+	var payout = 0
+
 	if player_total > banker_total:
-		$Game_Outcome.dialog_text = "Player wins!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nYour Payout is:" % [player_score, banker_score]
+		payout += active_bets["Player"] * 2
+		$Game_Outcome.dialog_text = "Player wins!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nPayout: $%d" % [player_score, banker_score, payout]
 		print("Player wins!")
 	elif banker_total > player_total:
-		$Game_Outcome.dialog_text = "Banker wins!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nYour Payout is:" % [player_score, banker_score]
+		payout += int(active_bets["Banker"] * 1.95)
+		$Game_Outcome.dialog_text = "Banker wins!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nPayout: $%d" % [player_score, banker_score, payout]
 		print("Banker wins!")
 	else:
-		$Game_Outcome.dialog_text = "Tie!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nYour Payout is:" % [player_score, banker_score]
+		payout += active_bets["Tie"] * 8
+		$Game_Outcome.dialog_text = "Tie!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nPayout: $%d" % [player_score, banker_score, payout]
 		print("Tie!")
+
+	player_bankroll += payout
+	$BankrollLabel.text = "Bankroll: $%d" % player_bankroll
 	$Game_Outcome.popup_centered()
 	$Game_Outcome.visible = true
 	$New_Round.visible = true
+
+	# Reset all bets
+	active_bets = {
+		"Player": 0,
+		"Banker": 0,
+		"Tie": 0
+	}
 		
 
 # Create a wait between drawing the 2 initial cards and extra cards
@@ -275,3 +419,5 @@ func evaluate_game():
 	display_cards(player_hand, banker_hand)
 	await end_game()
 	determine_winner(player_score, banker_score)
+	$BankrollLabel.text = "Bankroll: $%d" % player_bankroll
+	selected_bet_amount = 0
