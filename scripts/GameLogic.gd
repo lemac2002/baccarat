@@ -177,6 +177,12 @@ func place_bet() -> bool:
 		await get_tree().create_timer(2.0).timeout
 		$InsufficientFundsLabel.hide()
 		$Start_Game.visible = true
+		active_bets = {
+		"Player": 0,
+		"Banker": 0,
+		"Tie": 0
+		}
+		$BetLabel.text = ""
 		return false
 	player_bankroll -= total_bet
 	$BankrollLabel.text = "Bankroll: $%d" % player_bankroll
