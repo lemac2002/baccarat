@@ -38,7 +38,8 @@ var active_bets := {
 func _ready():
 	display_chips()
 	$BankrollLabel.text = "Bankroll: $%d" % player_bankroll
-	$BetAmountLabel.dialog_text = "Choose a chip to place your bet"
+	$InsufficientFundsLabel.dialog_text = "Place a bet by selecting the chip value you want ($1, $5, $25, $100, $500). \n Next select the corresponding bet area (Player,Tie or Banker)"
+	$InsufficientFundsLabel.popup_centered()
 
 func new_game_pressed() -> void:
 	var sfx = AudioStreamPlayer.new()
@@ -101,10 +102,19 @@ func _on_chip_clicked(viewport, event, shape_idx, denomination):
 	if event is InputEventMouseButton and event.pressed:
 		selected_bet_amount = denomination
 		$BetAmountLabel.dialog_text = "Selected Chip: $%d" % denomination
+		$BetLabel.text = "Selected Chip: $%d" % denomination
 		print("Selected chip: $%d" % denomination)
 
 func _on_PlayerBetArea_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton and event.pressed:
+		if active_bets["Banker"] > 0:
+			$InsufficientFundsLabel.dialog_text = "You’ve already bet on Banker — you can’t also bet on Player."
+			$InsufficientFundsLabel.popup_centered()
+			return  0
+		if active_bets["Tie"] > 0:
+			$InsufficientFundsLabel.dialog_text = "You’ve already bet on Tie — you can’t also bet on Player."
+			$InsufficientFundsLabel.popup_centered()
+			return
 		if selected_bet_amount == 0:
 			print("No chip selected.")
 			return
@@ -116,6 +126,14 @@ func _on_PlayerBetArea_input_event(viewport, event, shape_idx):
 
 func _on_BankerBetArea_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton and event.pressed:
+		if active_bets["Player"] > 0:
+			$InsufficientFundsLabel.dialog_text = "You’ve already bet on Player — you can’t also bet on Banker."
+			$InsufficientFundsLabel.popup_centered()
+			return
+		if active_bets["Tie"] > 0:
+			$InsufficientFundsLabel.dialog_text = "You’ve already bet on Tie — you can’t also bet on Banker."
+			$InsufficientFundsLabel.popup_centered()
+			return
 		if selected_bet_amount == 0:
 			print("No chip selected.")
 			return
@@ -127,6 +145,14 @@ func _on_BankerBetArea_input_event(viewport, event, shape_idx):
 
 func _on_TieBetArea_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton and event.pressed:
+		if active_bets["Player"] > 0:
+			$InsufficientFundsLabel.dialog_text = "You’ve already bet on Player — you can’t also bet on Tie."
+			$InsufficientFundsLabel.popup_centered()
+			return
+		if active_bets["Banker"] > 0:
+			$InsufficientFundsLabel.dialog_text = "You’ve already bet on Banker — you can’t also bet on Tie."
+			$InsufficientFundsLabel.popup_centered()
+			return
 		if selected_bet_amount == 0:
 			print("No chip selected.")
 			return
@@ -156,13 +182,15 @@ func place_bet() -> bool:
 	$BankrollLabel.text = "Bankroll: $%d" % player_bankroll
 	return true
 
-# Show player and banker cards visually
-func display_cards(player_hand: Array, banker_hand: Array):
+func clear_cards():
 	for child in get_children():
 		if child.name.begins_with("Card_"):
 			remove_child(child)
 			child.queue_free()
-
+# Show player and banker cards visually
+func display_cards(player_hand: Array, banker_hand: Array):
+	clear_cards()
+	
 	for i in player_hand.size():
 		var card_sprite = create_card_sprite(player_hand[i])
 		card_sprite.position = PLAYER_CARD_POS + Vector2(i * CARD_SPACING, 0)
@@ -215,7 +243,7 @@ func new_round():
 		print("Shoe is low with ", deck.size(), " cards remaining, reshuffling...")
 		init_deck()
 		shuffle_deck()
-		
+	
 	if await place_bet() != true:
 		$New_Round.visible = true
 		$Start_Game.visible = false
@@ -292,21 +320,23 @@ func determine_winner(player_total, banker_total):
 
 	if player_total > banker_total:
 		payout += active_bets["Player"] * 2
-		$Game_Outcome.dialog_text = "Player wins!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nPayout: $%d" % [player_score, banker_score, payout]
+		$Game_Outcome.dialog_text = "Player wins!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nPayout: $%d \n\nPlace a new bet for the next round" % [player_score, banker_score, payout]
 		print("Player wins!")
 	elif banker_total > player_total:
 		payout += int(active_bets["Banker"] * 1.95)
-		$Game_Outcome.dialog_text = "Banker wins!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nPayout: $%d" % [player_score, banker_score, payout]
+		$Game_Outcome.dialog_text = "Banker wins!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nPayout: $%d \n\nPlace a new bet for the next round" % [player_score, banker_score, payout]
 		print("Banker wins!")
 	else:
 		payout += active_bets["Tie"] * 8
-		$Game_Outcome.dialog_text = "Tie!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nPayout: $%d" % [player_score, banker_score, payout]
+		$Game_Outcome.dialog_text = "Tie!\n\nPlayer Hand Total: %d\nBanker Hand Total: %d\n\nPayout: $%d \n\nPlace a new bet for the next round" % [player_score, banker_score, payout]
 		print("Tie!")
 
 	player_bankroll += payout
 	$BankrollLabel.text = "Bankroll: $%d" % player_bankroll
 	$Game_Outcome.popup_centered()
 	$Game_Outcome.visible = true
+	await $Game_Outcome.confirmed
+	clear_cards()
 	$New_Round.visible = true
 
 	# Reset all bets
