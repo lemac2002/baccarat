@@ -41,12 +41,20 @@ func _ready():
 	$BetAmountLabel.dialog_text = "Choose a chip to place your bet"
 
 func new_game_pressed() -> void:
+	var sfx = AudioStreamPlayer.new()
+	sfx.stream = preload("res://assets/Sounds/Minimalist1.mp3")
+	add_child(sfx)
+	sfx.play()
 	$Start_Game.visible = false
 	print("New Game Pressed")
 	new_game()
 
 func new_round_pressed() -> void:
 	print("New Round Pressed")
+	var sfx = AudioStreamPlayer.new()
+	sfx.stream = preload("res://assets/Sounds/Minimalist1.mp3")
+	add_child(sfx)
+	sfx.play()
 	$New_Round.visible = false
 	new_round()
 
@@ -239,6 +247,10 @@ func fisher_yates_shuffle(array):
 # A helper that calls our Fisher-Yates shuffle on the deck.
 func shuffle_deck():
 	fisher_yates_shuffle(deck)
+	var sfx = AudioStreamPlayer.new()
+	sfx.stream = preload("res://assets/Sounds/Shuffle.mp3")
+	add_child(sfx)
+	sfx.play()
 	print("Shoe shuffled")
 
 
