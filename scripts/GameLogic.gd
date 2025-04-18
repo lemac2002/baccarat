@@ -111,6 +111,7 @@ func _on_PlayerBetArea_input_event(viewport, event, shape_idx):
 		active_bets["Player"] += selected_bet_amount
 		selected_bet_amount = 0
 		$BetAmountLabel.dialog_text = "Bet $%d on Player" % active_bets["Player"]
+		$BetLabel.text = "Bet $%d on Player" % active_bets["Player"]
 		print("Player Bet Total: $%d" % active_bets["Player"])
 
 func _on_BankerBetArea_input_event(viewport, event, shape_idx):
@@ -121,6 +122,7 @@ func _on_BankerBetArea_input_event(viewport, event, shape_idx):
 		active_bets["Banker"] += selected_bet_amount
 		selected_bet_amount = 0
 		$BetAmountLabel.dialog_text = "Bet $%d on Banker" % active_bets["Banker"]
+		$BetLabel.text = "Bet $%d on Banker" % active_bets["Banker"]
 		print("Banker Bet Total: $%d" % active_bets["Banker"])
 
 func _on_TieBetArea_input_event(viewport, event, shape_idx):
@@ -131,6 +133,7 @@ func _on_TieBetArea_input_event(viewport, event, shape_idx):
 		active_bets["Tie"] += selected_bet_amount
 		selected_bet_amount = 0
 		$BetAmountLabel.dialog_text = "Bet $%d on Tie" % active_bets["Tie"]
+		$BetLabel.text = "Bet $%d on Tie" % active_bets["Tie"]
 		print("Tie Bet Total: $%d" % active_bets["Tie"])
 
 func place_bet() -> bool:
@@ -215,6 +218,7 @@ func new_round():
 		
 	if await place_bet() != true:
 		$New_Round.visible = true
+		$Start_Game.visible = false
 		return
 		
 	deal_initial_cards()
