@@ -13,6 +13,7 @@ config_version=5
 config/name="Baccarat"
 run/main_scene="uid://2g4qeqnknyyc"
 config/features=PackedStringArray("4.4", "Forward Plus")
+config/icon="uid://b4mhbsh1akjd6"
 
 [dotnet]
 
