@@ -10,3 +10,6 @@ The game developed will hold around the same probabilities as the ones shown in 
 
 ## Usage
 Download the .exe. Follow the Instructions and Alert Screens in the game
+
+## License
+All assets and images were creative commons
